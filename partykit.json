@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.partykit.io/schema.json",
+  "name": "test-partysocket-reconnect",
+  "main": "party/server.ts",
+  "compatibilityDate": "2024-10-09",
+  "serve": {
+    "path": "public",
+    "build": "app/client.tsx"
+  }
+}
