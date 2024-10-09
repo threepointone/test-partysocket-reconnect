@@ -1,39 +1,33 @@
-import "./styles.css";
+import React, { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import Counter from "./components/Counter";
+import { usePartySocket } from "partysocket/react";
 
 function App() {
-  return (
-    <main>
-      <h1>🎈 Welcome to PartyKit!</h1>
-      <p>
-        This is the React starter. (
-        <a href="https://github.com/partykit/templates/tree/main/templates/react">
-          README on GitHub.
-        </a>
-        )
-      </p>
-      <p>Find your way around:</p>
-      <ul>
-        <li>
-          PartyKit server: <code>party/server.ts</code>
-        </li>
-        <li>
-          Client entrypoint: <code>app/client.tsx</code>
-        </li>
-        <li>
-          The Counter component: <code>app/components/Counter.tsx</code>
-        </li>
-      </ul>
-      <p>
-        Read more: <a href="https://docs.partykit.io">PartyKit docs</a>
-      </p>
-      <p>
-        <i>This counter is multiplayer. Try it with multiple browser tabs.</i>
-      </p>
-      <Counter />
-    </main>
-  );
+  const socket = usePartySocket({
+    party: "main",
+    room: "my-room",
+    onMessage: (message) => {
+      console.log(message.data);
+    },
+    onOpen: () => {
+      console.log("open");
+    },
+    onClose: ({ reason, code }) => {
+      console.log("closed", reason, code);
+    },
+    onError: (error) => {
+      console.log("error", error);
+    },
+  });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      socket.send("hello");
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  return <h1>Hello World</h1>;
 }
 
-createRoot(document.getElementById("app")!).render(<App />);
+const root = createRoot(document.getElementById("app")!);
+
+root.render(<App />);
